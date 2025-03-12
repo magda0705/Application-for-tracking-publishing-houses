@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interogări SQL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('static/tables.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #5d4037;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: rgba(239, 235, 233, 0.9); /* semi-transparent background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(93, 64, 55, 0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4e342e;
+        }
+        h2 {
+            margin-top: 30px;
+            text-align: center;
+            color: #6d4c41;
+        }
+        form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin: 10px 0;
+            width: 70%;
+            border: 1px solid #d7ccc8;
+            border-radius: 5px;
+            background-color: #faf3ef;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #8d6e63;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #6d4c41;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #d7ccc8;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #d7ccc8;
+        }
+        td {
+            background-color: #f5ebe0;
+        }
+        .error {
+            color: #d32f2f;
+            margin-bottom: 20px;
+        }
+        .back-button {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #795548;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .back-button:hover {
+            background-color: #5d4037;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interogări SQL</h1>
+
+        <a href="/tables" class="back-button">Înapoi</a>
+
+        {% if erori %}
+        <div class="error">
+            <p>Erori:</p>
+            <ul>
+                {% for eroare in erori %}
+                <li>{{ eroare }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% for key, interogare in interogari.items() %}
+        <h2>{{ interogare['titlu'] }}</h2>
+        <form method="post">
+            <input type="hidden" name="interogare" value="{{ key }}">
+            {% if interogare['label'] %}
+            <label>{{ interogare['label'] }}</label>
+            <input type="text" name="{{ key }}" placeholder="{{ interogare['placeholder'] }}">
+            {% endif %}
+            <button type="submit">Execută</button>
+        </form>
+        {% if rezultate.get(key) %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        {% for col in rezultate[key][0].keys() %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rezultate[key] %}
+                    <tr>
+                        {% for cell in row.values() %}
+                        <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>Nu există rezultate pentru această interogare.</p>
+        {% endif %}
+        {% endfor %}
+    </div>
+</body>
+</html>
